@@ -16,10 +16,10 @@ public class IndicatorController : MonoBehaviour
     [SerializeField] private Image _colorIndicatorFirst;
     [SerializeField] private Image _colorIndicatorSecond;
 
+    private Caller _call;
+
     private IEnumerator _firstIndicator;
     private IEnumerator _secondIndicator;
-
-    private Caller _call;
 
     private int _timer;
 
@@ -59,11 +59,24 @@ public class IndicatorController : MonoBehaviour
         }
     }
 
-    private IEnumerator InitiateFistIndicator()
+    private void InitializeData(Image color, TMP_Text text)
     {
         _timer = Random.Range(MinValue, MaxValue);
-        _colorIndicatorFirst.color = Color.green;
-        _textIndicatorFirst.text = _timer.ToString();
+        color.color = Color.green;
+        text.text = _timer.ToString();
+    }
+
+    private void SetDefaultValues()
+    {
+        _colorIndicatorFirst.color = Color.white;
+        _colorIndicatorSecond.color = Color.white;
+        _textIndicatorFirst.text = "0";
+        _textIndicatorSecond.text = "0";
+    }
+
+    private IEnumerator InitiateFistIndicator()
+    {
+        InitializeData(_colorIndicatorFirst, _textIndicatorFirst);
 
         while (true)
         {
@@ -86,9 +99,7 @@ public class IndicatorController : MonoBehaviour
     {
         yield return _firstIndicator;
 
-        _timer = Random.Range(MinValue, MaxValue);
-        _colorIndicatorSecond.color = Color.green;
-        _textIndicatorSecond.text = _timer.ToString();
+        InitializeData(_colorIndicatorSecond, _textIndicatorSecond);
 
         while (true)
         {
@@ -104,13 +115,5 @@ public class IndicatorController : MonoBehaviour
         }
 
         yield return StartCoroutine(InitiateFistIndicator());
-    }
-
-    private void SetDefaultValues()
-    {
-        _colorIndicatorFirst.color = Color.white;
-        _colorIndicatorSecond.color = Color.white;
-        _textIndicatorFirst.text = "0";
-        _textIndicatorSecond.text = "0";
     }
 }
