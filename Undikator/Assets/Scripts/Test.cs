@@ -3,49 +3,60 @@ using System.Collections.Generic;
 using UnityEngine;
 public class Test : MonoBehaviour
 {
-    private float timer = 5;
-    private float seconds;
+    IEnumerator routine1;
+    IEnumerator routine2;
 
     private void Start()
     {
+        routine1 = Coroutine1(); 
+        routine2 = Coroutine2();
 
-        IEnumerator routine1 = Coroutine1();
-        IEnumerator routine2 = Coroutine2();
-
-        routine1.MoveNext();
-
-        // Запускаем обе корутины (ведущая корутина продолжит выполнение после запуска)
-        StartCoroutine(routine1);
-        StartCoroutine(routine2);
+        
+            routine1.MoveNext();
+            StartCoroutine(routine2);
+        
+        
     }
-
     private IEnumerator Coroutine1()
     {
+        int timer = Random.Range(3,5);
+
         while (true)
         {
-            yield return null;
-            timer -= Time.deltaTime;
-            seconds = Mathf.FloorToInt(timer % 60);
+            yield return new WaitForSeconds(1);
+            timer--;
+            print(timer);
 
-
-            if (seconds > 0)
-                print(seconds);
-
-            else if (seconds < 0)
-            { // передаем управление другой корутине
+            if (timer == 0)
+            {
                 Debug.Log("Coroutine1 finished");
+                
                 break;
             }
         }
-        yield return null;
+
+        yield return StartCoroutine(Coroutine2());
     }
     private IEnumerator Coroutine2()
     {
+        yield return routine1;
+        int timer = Random.Range(3, 7);
+
         while (true)
-        {
+        {           
             yield return new WaitForSeconds(1f);
-            Debug.Log("Coroutine2 executed");
+
+            timer--;
+            print(timer);
+
+            if(timer == 0)
+            {
+                Debug.Log("Coroutine2 executed");
+                break;
+            }
+            
         }
-        yield return null;
+
+        yield return StartCoroutine(Coroutine1());
     }
 }

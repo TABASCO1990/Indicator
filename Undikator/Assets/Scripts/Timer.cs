@@ -1,5 +1,6 @@
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,7 +17,12 @@ public class Timer : MonoBehaviour
     [SerializeField] private Image _colorIndicatorFirst;
     [SerializeField] private Image _colorIndicatorSecond;
 
+    private IEnumerator _firstIndicator;
+    private IEnumerator _secondIndicator;
+
     private Caller _call;
+
+    private int _timer;
 
     private void Awake()
     {
@@ -27,7 +33,6 @@ public class Timer : MonoBehaviour
     private void OnEnable()
     {
         _call.PressedButton += OnPressedButton;
-
     }
 
     private void OnDisable()
@@ -39,16 +44,14 @@ public class Timer : MonoBehaviour
     {
         if (_call.IsPressed)
         {
-            IEnumerator routine1 = StartFirstIndicator();
-            IEnumerator routine2 = StartSecondtIndicator();
-
-            routine1.MoveNext();
-
-            StartCoroutine(routine1);
-            StartCoroutine(routine2);
+            _firstIndicator = InitiateFistIndicator();
+            _secondIndicator = InitiateSecondIndicator();
 
             _colorIndicatorFirst.color = Color.red;
             _colorIndicatorSecond.color = Color.red;
+
+            _firstIndicator.MoveNext();
+            StartCoroutine(_secondIndicator);
         }
         else
         {
@@ -57,48 +60,51 @@ public class Timer : MonoBehaviour
         }
     }
 
-
-
-
-    private IEnumerator StartFirstIndicator()
-    { 
-        print("1 go");
+    private IEnumerator InitiateFistIndicator()
+    {
+        _timer = Random.Range(MinValue, MaxValue);
         _colorIndicatorFirst.color = Color.green;
-        print(_colorIndicatorFirst.color);
-        float time = Random.Range(MinValue, MaxValue);
-        
+        _textIndicatorFirst.text = _timer.ToString();
 
-        while (time >= EndValue)
+        while (true)
         {
-            yield return null;
-            time -= Time.deltaTime;
-            //print(time);
-            _textIndicatorFirst.text = time.ToString();
+            _timer--;
+            _textIndicatorFirst.text = _timer.ToString();
 
-            if (time < 0)
+            yield return new WaitForSeconds(1);
+
+            if (_timer == EndValue)
             {
                 _colorIndicatorFirst.color = Color.red;
-                Debug.Log("Coroutine1 finished");
                 break;
-
             }
         }
+
+        yield return StartCoroutine(InitiateSecondIndicator());
     }
 
-    private IEnumerator StartSecondtIndicator()
+    private IEnumerator InitiateSecondIndicator()
     {
-        print("2 go");
-        int time = Random.Range(MinValue, MaxValue);
-        _colorIndicatorSecond.color = Color.green;
+        yield return _firstIndicator;
 
-        while (time >= EndValue)
+        _timer = Random.Range(MinValue, MaxValue);
+        _colorIndicatorSecond.color = Color.green;
+        _textIndicatorSecond.text = _timer.ToString();
+
+        while (true)
         {
-            _textIndicatorSecond.text = time.ToString();
-            time--;
+            _timer--;
+            _textIndicatorSecond.text = _timer.ToString();
             yield return new WaitForSeconds(1);
+
+            if (_timer == EndValue)
+            {
+                _colorIndicatorSecond.color = Color.red;
+                break;
+            }
         }
 
-        _colorIndicatorSecond.color = Color.red;       
+        yield return StartCoroutine(InitiateFistIndicator());
     }
 
     private void SetDefaultValues()
