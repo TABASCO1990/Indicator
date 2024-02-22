@@ -1216,7 +1216,7 @@ MonoBehaviour:
   m_text: Indicator
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6eab17f292448864db1772e6dd8bd2f4, type: 2}
-  m_sharedMaterial: {fileID: -147095474287441095, guid: 6eab17f292448864db1772e6dd8bd2f4, type: 2}
+  m_sharedMaterial: {fileID: 7670744735618385765, guid: 6eab17f292448864db1772e6dd8bd2f4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
