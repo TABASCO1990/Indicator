@@ -1,6 +1,6 @@
 using UnityEngine;
-using TMPro;
 using System;
+using TMPro;
 
 public class Caller : MonoBehaviour
 {
@@ -34,6 +34,6 @@ public class Caller : MonoBehaviour
         }
         else
             _isPressed = false;
-            return _title.text = _textStart;
+        return _title.text = _textStart;
     }
 }
